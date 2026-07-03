@@ -40,27 +40,23 @@ const CustomerDashboard = () => {
   // Listen for real-time updates regarding customer's tickets
   useEffect(() => {
     if (socket) {
-      socket.on('ticketStatusUpdated', (updatedTicket) => {
+      const updateTicketInList = (updatedTicket) => {
         setTickets((prevTickets) =>
           prevTickets.map((t) => (t._id === updatedTicket._id ? updatedTicket : t))
         );
         if (selectedTicket && selectedTicket._id === updatedTicket._id) {
           setSelectedTicket(updatedTicket);
         }
-      });
+      };
 
-      socket.on('ticketAssigned', (updatedTicket) => {
-        setTickets((prevTickets) =>
-          prevTickets.map((t) => (t._id === updatedTicket._id ? updatedTicket : t))
-        );
-        if (selectedTicket && selectedTicket._id === updatedTicket._id) {
-          setSelectedTicket(updatedTicket);
-        }
-      });
+      socket.on('ticketStatusUpdated', updateTicketInList);
+      socket.on('ticketAssigned', updateTicketInList);
+      socket.on('ticketListUpdate', updateTicketInList);
 
       return () => {
-        socket.off('ticketStatusUpdated');
-        socket.off('ticketAssigned');
+        socket.off('ticketStatusUpdated', updateTicketInList);
+        socket.off('ticketAssigned', updateTicketInList);
+        socket.off('ticketListUpdate', updateTicketInList);
       };
     }
   }, [socket, selectedTicket]);
