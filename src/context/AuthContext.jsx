@@ -2,7 +2,7 @@ import React, { createContext, useState, useEffect, useContext } from 'react';
 
 const AuthContext = createContext();
 
-export const API_BASE_URL = 'http://localhost:5001/api';
+export const API_BASE_URL = 'https://omnisupport-skgt.onrender.com/api';
 
 export const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(null);

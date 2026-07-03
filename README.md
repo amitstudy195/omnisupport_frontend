@@ -1,16 +1,34 @@
-# React + Vite
+# OmniSupport Frontend
 
-This template provides a minimal setup to get React working in Vite with HMR and some Oxlint rules.
+This folder contains the React frontend for the OmniSupport real-time ticketing system.
 
-Currently, two official plugins are available:
+## What it includes
+- Customer support portal for submitting and tracking tickets
+- Agent dashboard for claiming tickets, updating status, and live chat
+- Admin dashboard for ticket audit, monitoring progress, and system oversight
+- Tailwind CSS styling and responsive layout
+- Socket.IO client for real-time updates
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
+## Run locally
 
-## React Compiler
+1. Open a terminal in `frontend/`
+2. Install dependencies:
+   ```bash
+   npm install
+   ```
+3. Start the development server:
+   ```bash
+   npm run dev
+   ```
+4. Open the Vite URL shown in the terminal (typically `http://localhost:5173`)
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+## Available scripts
+- `npm run dev` — start frontend development server
+- `npm run build` — create a production build
+- `npm run preview` — preview the production build
+- `npm run lint` — run Oxlint checks
 
-## Expanding the Oxlint configuration
-
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and Oxlint's TypeScript related rules in your project.
+## Notes
+- The frontend communicates with the backend API at `API_BASE_URL` from `src/context/AuthContext.jsx`.
+- Make sure the backend is running before testing login, ticket creation, or live chat.
+- If you change backend routes or authentication, update the frontend API base URL accordingly.
