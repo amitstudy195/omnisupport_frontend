@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useSocket } from '../context/SocketContext';
-import { useAuth, API_BASE_URL } from '../context/AuthContext';
+import { useAuth, API_BASE_URL, fetchWithAuth } from '../context/AuthContext';
 import Navbar from '../components/Navbar';
 import TicketForm from '../components/TicketForm';
 import ChatWindow from '../components/ChatWindow';
@@ -19,9 +19,7 @@ const CustomerDashboard = () => {
   const fetchTickets = async () => {
     try {
       setLoading(true);
-      const response = await fetch(`${API_BASE_URL}/tickets`, {
-        credentials: 'include',
-      });
+      const response = await fetchWithAuth(`${API_BASE_URL}/tickets`);
       const data = await response.json();
       if (data.success) {
         setTickets(data.tickets);

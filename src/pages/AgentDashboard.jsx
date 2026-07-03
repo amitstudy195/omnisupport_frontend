@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useSocket } from '../context/SocketContext';
-import { useAuth, API_BASE_URL } from '../context/AuthContext';
+import { useAuth, API_BASE_URL, fetchWithAuth } from '../context/AuthContext';
 import Navbar from '../components/Navbar';
 import ChatWindow from '../components/ChatWindow';
 import { RefreshCw, Play, CheckCircle2, UserCheck, HelpCircle, Inbox, User, AlertTriangle, Layers } from 'lucide-react';
@@ -18,9 +18,7 @@ const AgentDashboard = () => {
   const fetchTickets = async () => {
     try {
       setLoading(true);
-      const response = await fetch(`${API_BASE_URL}/tickets`, {
-        credentials: 'include',
-      });
+      const response = await fetchWithAuth(`${API_BASE_URL}/tickets`);
       const data = await response.json();
       if (data.success) {
         setTickets(data.tickets);
@@ -88,10 +86,8 @@ const AgentDashboard = () => {
   // Claim/Self-Assign Ticket
   const claimTicket = async (ticketId) => {
     try {
-      const response = await fetch(`${API_BASE_URL}/tickets/${ticketId}/assign`, {
+      const response = await fetchWithAuth(`${API_BASE_URL}/tickets/${ticketId}/assign`, {
         method: 'PUT',
-        headers: { 'Content-Type': 'application/json' },
-        credentials: 'include',
       });
       const data = await response.json();
       if (data.success) {
@@ -108,11 +104,9 @@ const AgentDashboard = () => {
   // Change Ticket Status
   const handleStatusChange = async (ticketId, status) => {
     try {
-      const response = await fetch(`${API_BASE_URL}/tickets/${ticketId}/status`, {
+      const response = await fetchWithAuth(`${API_BASE_URL}/tickets/${ticketId}/status`, {
         method: 'PUT',
-        headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ status }),
-        credentials: 'include',
       });
       const data = await response.json();
       if (data.success) {

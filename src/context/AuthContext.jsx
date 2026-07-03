@@ -4,6 +4,26 @@ const AuthContext = createContext();
 
 export const API_BASE_URL = 'https://omnisupport-skgt.onrender.com/api';
 
+export const getAuthHeaders = () => {
+  if (typeof window === 'undefined') return {};
+  const token = localStorage.getItem('token');
+  return token ? { Authorization: `Bearer ${token}` } : {};
+};
+
+export const fetchWithAuth = async (url, options = {}) => {
+  const headers = {
+    'Content-Type': 'application/json',
+    ...getAuthHeaders(),
+    ...(options.headers || {}),
+  };
+
+  return fetch(url, {
+    credentials: 'include',
+    ...options,
+    headers,
+  });
+};
+
 export const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
@@ -17,20 +37,16 @@ export const AuthProvider = ({ children }) => {
   const checkAuthStatus = async () => {
     try {
       setLoading(true);
-      // We pass credentials true so the HTTP-only cookie token is sent
-      const response = await fetch(`${API_BASE_URL}/auth/me`, {
+      // Use bearer fallback plus credentials to support cookie and token login.
+      const response = await fetchWithAuth(`${API_BASE_URL}/auth/me`, {
         method: 'GET',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        // We include credentials so cookie-based authentication works
-        credentials: 'include',
       });
 
       const data = await response.json();
       if (data.success) {
         setUser(data.user);
       } else {
+        localStorage.removeItem('token');
         setUser(null);
       }
     } catch (err) {
@@ -55,6 +71,7 @@ export const AuthProvider = ({ children }) => {
 
       const data = await response.json();
       if (data.success) {
+        localStorage.setItem('token', data.token);
         setUser(data.user);
         return { success: true };
       } else {
@@ -81,6 +98,7 @@ export const AuthProvider = ({ children }) => {
 
       const data = await response.json();
       if (data.success) {
+        localStorage.setItem('token', data.token);
         setUser(data.user);
         return { success: true };
       } else {
@@ -99,6 +117,7 @@ export const AuthProvider = ({ children }) => {
         method: 'GET',
         credentials: 'include',
       });
+      localStorage.removeItem('token');
       setUser(null);
     } catch (err) {
       console.error('Logout error:', err.message);

@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { useSocket } from '../context/SocketContext';
-import { useAuth, API_BASE_URL } from '../context/AuthContext';
+import { useAuth, API_BASE_URL, fetchWithAuth } from '../context/AuthContext';
 import { Send, SendHorizontal, MessageCircle, AlertCircle, Calendar } from 'lucide-react';
 
 const ChatWindow = ({ ticketId, ticketStatus }) => {
@@ -24,9 +24,7 @@ const ChatWindow = ({ ticketId, ticketStatus }) => {
     const fetchMessages = async () => {
       try {
         setLoading(true);
-        const response = await fetch(`${API_BASE_URL}/messages/${ticketId}`, {
-          credentials: 'include',
-        });
+        const response = await fetchWithAuth(`${API_BASE_URL}/messages/${ticketId}`);
         const data = await response.json();
         if (data.success) {
           setMessages(data.messages);

@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useSocket } from '../context/SocketContext';
-import { useAuth, API_BASE_URL } from '../context/AuthContext';
+import { useAuth, API_BASE_URL, fetchWithAuth } from '../context/AuthContext';
 import Navbar from '../components/Navbar';
 import ChatWindow from '../components/ChatWindow';
 import { 
@@ -28,21 +28,21 @@ const AdminDashboard = () => {
     try {
       setLoading(true);
       // Fetch Tickets
-      const ticketsRes = await fetch(`${API_BASE_URL}/tickets`, { credentials: 'include' });
+      const ticketsRes = await fetchWithAuth(`${API_BASE_URL}/tickets`);
       const ticketsData = await ticketsRes.json();
       if (ticketsData.success) {
         setTickets(ticketsData.tickets);
       }
 
       // Fetch Agents
-      const agentsRes = await fetch(`${API_BASE_URL}/auth/agents`, { credentials: 'include' });
+      const agentsRes = await fetchWithAuth(`${API_BASE_URL}/auth/agents`);
       const agentsData = await agentsRes.json();
       if (agentsData.success) {
         setAgents(agentsData.agents);
       }
 
       // Fetch Metrics Stats
-      const statsRes = await fetch(`${API_BASE_URL}/tickets/stats`, { credentials: 'include' });
+      const statsRes = await fetchWithAuth(`${API_BASE_URL}/tickets/stats`);
       const statsData = await statsRes.json();
       if (statsData.success) {
         setStats(statsData.stats);
@@ -103,7 +103,7 @@ const AdminDashboard = () => {
 
   const refreshMetrics = async () => {
     try {
-      const statsRes = await fetch(`${API_BASE_URL}/tickets/stats`, { credentials: 'include' });
+      const statsRes = await fetchWithAuth(`${API_BASE_URL}/tickets/stats`);
       const statsData = await statsRes.json();
       if (statsData.success) {
         setStats(statsData.stats);
@@ -117,11 +117,9 @@ const AdminDashboard = () => {
   const assignTicketToAgent = async (ticketId, agentId) => {
     if (!agentId) return;
     try {
-      const response = await fetch(`${API_BASE_URL}/tickets/${ticketId}/assign`, {
+      const response = await fetchWithAuth(`${API_BASE_URL}/tickets/${ticketId}/assign`, {
         method: 'PUT',
-        headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ agentId }),
-        credentials: 'include',
       });
       const data = await response.json();
       if (data.success) {

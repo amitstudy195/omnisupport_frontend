@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { API_BASE_URL } from '../context/AuthContext';
+import { API_BASE_URL, fetchWithAuth } from '../context/AuthContext';
 import { LifeBuoy, AlertCircle, CheckCircle2 } from 'lucide-react';
 
 const TicketForm = ({ onTicketCreated }) => {
@@ -23,13 +23,9 @@ const TicketForm = ({ onTicketCreated }) => {
       setError(null);
       setSuccess(false);
 
-      const response = await fetch(`${API_BASE_URL}/tickets`, {
+      const response = await fetchWithAuth(`${API_BASE_URL}/tickets`, {
         method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
         body: JSON.stringify({ title, description, category, priority }),
-        credentials: 'include',
       });
 
       const data = await response.json();
