@@ -1,8 +1,13 @@
 import React, { createContext, useContext, useEffect, useState } from 'react';
 import { io } from 'socket.io-client';
-import { useAuth } from './AuthContext';
+import { useAuth, API_BASE_URL } from './AuthContext';
 
 const SocketContext = createContext();
+
+const getSocketUrl = () => {
+  const backendUrl = API_BASE_URL.replace(/\/api\/?$/, '');
+  return backendUrl;
+};
 
 export const SocketProvider = ({ children }) => {
   const [socket, setSocket] = useState(null);
@@ -14,7 +19,8 @@ export const SocketProvider = ({ children }) => {
 
     if (user) {
       // Connect to the backend socket server
-      socketInstance = io('http://localhost:5001', {
+      const socketUrl = getSocketUrl();
+      socketInstance = io(socketUrl, {
         withCredentials: true, // Send HTTP-only cookie with socket handshake
         transports: ['websocket', 'polling'],
       });
